@@ -1,6 +1,5 @@
-﻿using static System.Net.WebRequestMethods;
-
-namespace Shop_back.Core.Models.ShopItems
+﻿
+namespace Shop_back.Core.Models.Items
 {
 
     public class Smart

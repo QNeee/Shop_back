@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using Shop_back.Core.Abstractions.Items.Smarts;
-using Shop_back.Core.Models.ShopItems;
+using Shop_back.Core.Models.Items;
 using Shop_back.DataAccess.Entities.Items;
 namespace Shop_back.DataAccess.Repositories.Items
 {

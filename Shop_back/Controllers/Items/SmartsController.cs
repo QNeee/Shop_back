@@ -2,7 +2,7 @@
 using Shop_back.Contracts.Request.items;
 using Shop_back.Contracts.Response.Items;
 using Shop_back.Core.Abstractions.Items.Smarts;
-using Shop_back.Core.Models.ShopItems;
+using Shop_back.Core.Models.Items;
 
 namespace Shop_back.Controllers.Items
 {

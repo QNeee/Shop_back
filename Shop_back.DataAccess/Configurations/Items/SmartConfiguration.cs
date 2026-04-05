@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Shop_back.Core.Models.ShopItems;
+using Shop_back.Core.Models.Items;
 using Shop_back.DataAccess.Entities.Items;
 
 namespace Shop_back.DataAccess.Configurations.Items
