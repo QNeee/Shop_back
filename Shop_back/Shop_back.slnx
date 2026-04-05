@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="../Shop_back.Core/Shop_back.Core.csproj" />
+  <Project Path="../Shop_back.DataAccess/Shop_back.DataAccess.csproj" />
+  <Project Path="Shop_back.csproj" />
+</Solution>
