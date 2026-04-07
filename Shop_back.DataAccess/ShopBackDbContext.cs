@@ -11,5 +11,6 @@ namespace Shop_back.DataAccess
 
         }
         public DbSet<SmartEntity> Smarts { get; set; }
+        public DbSet<SmartVariantsEntity> SmartVariants { get; set; }
     }
 }

@@ -1,13 +1,13 @@
 ﻿
 
 using Shop_back.Core.Abstractions.Items.Smarts;
-using Shop_back.Core.Models.Items;
+using Shop_back.Core.Models.Items.Smart;
 namespace Shop_back.Services.Items
 {
-    public class SmartsService : ISmartsService
+    public class SmartServices : ISmartsService
     {
         private readonly ISmartsRepository _smartsReposiroty;
-        public SmartsService(ISmartsRepository smartsReposiroty)
+        public SmartServices(ISmartsRepository smartsReposiroty)
         {
             _smartsReposiroty = smartsReposiroty;
         }
@@ -19,13 +19,18 @@ namespace Shop_back.Services.Items
         {
             return await _smartsReposiroty.Create(smart);
         }
-        public async Task<Guid> UpdateSmart(Guid id, string title, string description, int price)
+        public async Task<Guid> UpdateSmart(Guid id, string title, string description)
         {
-            return await _smartsReposiroty.Update(id, title, description, price);
+            return await _smartsReposiroty.Update(id, title, description);
         }
         public async Task<Guid> DeleteSmart(Guid id)
         {
             return await _smartsReposiroty.Delete(id);
+        }
+        public async Task<Smart?> GetSmartById(Guid id)
+        {
+            var smarts = await _smartsReposiroty.Get();
+            return smarts.FirstOrDefault(s => s.Id == id);
         }
     }
 }

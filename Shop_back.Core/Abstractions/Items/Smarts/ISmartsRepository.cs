@@ -1,4 +1,4 @@
-﻿using Shop_back.Core.Models.Items;
+﻿using Shop_back.Core.Models.Items.Smart;
 
 namespace Shop_back.Core.Abstractions.Items.Smarts
 {
@@ -7,6 +7,6 @@ namespace Shop_back.Core.Abstractions.Items.Smarts
         Task<Guid> Create(Smart smart);
         Task<Guid> Delete(Guid id);
         Task<List<Smart>> Get();
-        Task<Guid> Update(Guid id, string title, string description, int price);
+        Task<Guid> Update(Guid id, string title, string description);
     }
 }

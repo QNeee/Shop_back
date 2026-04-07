@@ -1,12 +1,17 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Shop_back.Contracts.Request.items.Smart;
 using Shop_back.Core.Abstractions.Items.Smarts;
 using Shop_back.DataAccess;
 using Shop_back.DataAccess.Repositories.Items;
+using Shop_back.Middlewares;
 using Shop_back.Services.Items;
 var builder = WebApplication.CreateBuilder(args);
 
 
+
 builder.Services.AddControllers();
+builder.Services.AddScoped<IValidator<CreateSmartRequest>, CreateSmartRequestValidator>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ShopBackDbContext>(
@@ -15,10 +20,10 @@ builder.Services.AddDbContext<ShopBackDbContext>(
         options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(ShopBackDbContext)));
     }
 );
-builder.Services.AddScoped<ISmartsService, SmartsService>();
+builder.Services.AddScoped<ISmartsService, SmartServices>();
 builder.Services.AddScoped<ISmartsRepository, SmartsRepository>(); 
 var app = builder.Build();
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
