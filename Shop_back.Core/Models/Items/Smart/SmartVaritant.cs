@@ -4,7 +4,6 @@ namespace Shop_back.Core.Models.Items.Smart
     public class SmartVariantOptions
     {
         public int Stock { get; set; }
-        public string Color { get; set; } = string.Empty;
         public string Memory { get; set; } = string.Empty;
         public string Storage { get; set; } = string.Empty;
         public int? Discount { get; set; }
@@ -12,14 +11,12 @@ namespace Shop_back.Core.Models.Items.Smart
         public SmartVariantOptions() { }
         public SmartVariantOptions(
             int stock,
-            string color,
             string memory,
             string storage,
             int price,
             int? discount = null)
         {
             Stock = stock;
-            Color = color;
             Memory = memory;
             Storage = storage;
             Discount = discount;

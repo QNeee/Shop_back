@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Shop_back.Core.Abstractions.Items.Smarts;
 using Shop_back.Core.Models.Items.Smart;
 using Shop_back.DataAccess.Entities.Items;
+using System.Text.Json;
 namespace Shop_back.DataAccess.Repositories.Items
 {
     public class SmartsRepository : ISmartsRepository
@@ -13,7 +14,7 @@ namespace Shop_back.DataAccess.Repositories.Items
         {
             _context = context;
         }
-        public async Task<List<Smart>> Get()
+        public async Task<List<SmartModel>> Get()
         {
             var smartEntities = await _context.Smarts
                 .AsNoTracking()
@@ -24,7 +25,7 @@ namespace Shop_back.DataAccess.Repositories.Items
                 .ToListAsync();
 
             return smartEntities.Select(e =>
-                Smart.Load(
+                SmartModel.Load(
                     e.Id,
                     e.Title,
                     e.Description,
@@ -34,7 +35,6 @@ namespace Shop_back.DataAccess.Repositories.Items
                             s.SmartId,
                             new SmartVariantOptions(
                                 s.Stock,
-                                s.Color,
                                 s.Memory,
                                 s.Storage,
                                 s.Price,
@@ -42,18 +42,21 @@ namespace Shop_back.DataAccess.Repositories.Items
                             ),
                             s.Id
                         ))
-                        .ToList()
+                        .ToList(),
+
+                    JsonSerializer.Deserialize<Dictionary<string, string[]>>(
+    string.IsNullOrWhiteSpace(e.Images) ? "{}" : e.Images
+) ?? new Dictionary<string, string[]>()
                 )
             ).ToList();
         }
-        public async Task<Guid> Create(Smart smart)
+        public async Task<Guid> Create(SmartModel smart)
         {
             var smartVariantEntities = smart.Variants.Select(v => new SmartVariantsEntity
             {
                 Id = v.Id,
                 SmartId = smart.Id,
                 Stock = v.Options.Stock,
-                Color = v.Options.Color,
                 Memory = v.Options.Memory,
                 Storage = v.Options.Storage,
                 Discount = v.Options.Discount,
@@ -79,10 +82,18 @@ namespace Shop_back.DataAccess.Repositories.Items
                 .SetProperty(b => b.Description, description));
             return id;
         }
+        public async Task<Guid> Update(Guid id, Dictionary<string, string[]> smartImages)
+        {
+            await _context.Smarts.Where(s => s.Id == id).ExecuteUpdateAsync(s => s
+                .SetProperty(b => b.Images, JsonSerializer.Serialize(smartImages)));
+            return id;
+        }
         public async Task<Guid> Delete(Guid id)
         {
             await _context.Smarts.Where(s => s.Id == id).ExecuteDeleteAsync();
             return id;
         }
+
+
     }
 }

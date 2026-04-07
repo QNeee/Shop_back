@@ -1,12 +1,11 @@
 ﻿
 namespace Shop_back.Core.Models.Items.Smart
 {
-
-    public class Smart
+    public class SmartModel
     {
-        public Smart(string title, string description, SmartVariantOptions[] options, Guid id = default)
+        public SmartModel(string title, string description, SmartVariantOptions[] options)
         {
-            Id = id == default ? Guid.NewGuid() : id;
+            Id = Guid.NewGuid();
             Title = title;
             Description = description;
             foreach (var option in options)
@@ -15,12 +14,13 @@ namespace Shop_back.Core.Models.Items.Smart
                 Variants.Add(newVariant);
             }
         }
-        public Smart (Guid id, string title, string description, List<SmartVariant> variants)
+        public SmartModel (Guid id, string title, string description, List<SmartVariant> variants, Dictionary<string, string[]> images)
         {
             Id = id;
             Title = title;
             Description = description;
             Variants= variants;
+            SmartImages = images;
         }
         public const int MinStrLength = 3;
         public const int MaxStrLength = 500;
@@ -28,11 +28,12 @@ namespace Shop_back.Core.Models.Items.Smart
         public string Title { get; } = string.Empty;
         public string Description { get; } = string.Empty;
         public List<SmartVariant> Variants { get; } = new List<SmartVariant>();
-        public static Smart Load(Guid id, string title, string description, List<SmartVariant> variants)
+        public Dictionary<string, string[]> SmartImages { get; } = new Dictionary<string, string[]>();
+        public static SmartModel Load(Guid id, string title, string description, List<SmartVariant> variants, Dictionary<string, string[]> images)
         {
-            return new Smart(id ,title, description, variants);
+            return new SmartModel(id, title, description, variants, images);
         }
-        public static Smart Create(string title, string description, SmartVariantOptions[] options)
+        public static SmartModel Create(string title, string description, SmartVariantOptions[] options)
         {
             if (string.IsNullOrWhiteSpace(title))
                 throw new ArgumentException("Title cannot be empty");
@@ -43,7 +44,7 @@ namespace Shop_back.Core.Models.Items.Smart
             if (options == null || options.Length == 0)
                 throw new ArgumentException("Options cannot be empty");
 
-            return new Smart(title, description, options);
+            return new SmartModel(title, description, options);
         }
     }
 

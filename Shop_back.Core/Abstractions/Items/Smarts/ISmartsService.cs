@@ -4,10 +4,10 @@ namespace Shop_back.Core.Abstractions.Items.Smarts
 {
     public interface ISmartsService
     {
-        Task<Guid> CreateSmart(Smart smart);
+        Task<Guid> CreateSmart(SmartModel smart);
         Task<Guid> DeleteSmart(Guid id);
-        Task<Smart?> GetSmartById(Guid id);
-        Task<List<Smart>> GetAllSmarts();
-        Task<Guid> UpdateSmart(Guid id, string title, string description);
+        Task<SmartModel?> GetSmartById(Guid id);
+        Task<List<SmartModel>> GetAllSmarts();
+        Task<Guid> UpdateSmartImages(Guid id, Dictionary<string, string[]> SmartImages);
     }
 }

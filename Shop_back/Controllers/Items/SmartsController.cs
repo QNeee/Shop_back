@@ -23,7 +23,7 @@ namespace Shop_back.Controllers.Items
         public async Task<ActionResult<List<GetAllSmartsResponse>>> GetSmarts()
         {
             var smarts = await _service.GetAllSmarts();
-            var response = smarts.Select(s => new GetAllSmartsResponse(s.Id, s.Title, s.Description, s.Variants));
+            var response = smarts.Select(s => new GetAllSmartsResponse(s.Id, s.Title, s.Description, s.Variants, s.SmartImages));
             return Ok(response);
         }
         [HttpPost]
@@ -42,7 +42,6 @@ namespace Shop_back.Controllers.Items
             var options = req.Options
                 .Select(o => new SmartVariantOptions(
                     o.Stock,
-                    o.Color,
                     o.Memory,
                     o.Storage,
                     o.Price,
@@ -50,16 +49,17 @@ namespace Shop_back.Controllers.Items
                 ))
                 .ToArray();
 
-            var smart = new Smart(req.Title, req.Description, options);
+            var smart = new SmartModel(req.Title, req.Description, options);
 
             var smartId = await _service.CreateSmart(smart);
 
             return Ok(smartId);
         }
         [HttpPut("{id:guid}")]
-        public async Task<ActionResult<Guid>> UpdateSmart(Guid id, [FromBody] CreateSmartRequest req)
+        public async Task<ActionResult<Guid>> UpdateSmart(Guid id, [FromBody] UpdateSmartRequest req)
         {
-            var smartId = await _service.UpdateSmart(id, req.Title, req.Description);
+
+            var smartId = await _service.UpdateSmartImages(id, req.SmartImages);
             return Ok(smartId);
         }
         [HttpDelete("{id:guid}")]

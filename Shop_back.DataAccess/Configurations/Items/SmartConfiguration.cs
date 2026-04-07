@@ -12,8 +12,8 @@ namespace Shop_back.DataAccess.Configurations.Items
         public void Configure(EntityTypeBuilder<SmartEntity> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Title).HasMaxLength(Smart.MaxStrLength).IsRequired();
-            builder.Property(x => x.Description).HasMaxLength(Smart.MaxStrLength).IsRequired();
+            builder.Property(x => x.Title).HasMaxLength(SmartModel.MaxStrLength).IsRequired();
+            builder.Property(x => x.Description).HasMaxLength(SmartModel.MaxStrLength).IsRequired();
             builder.Property(x => x.Variants).IsRequired();
         }
     }

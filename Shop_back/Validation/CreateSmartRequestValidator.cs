@@ -24,7 +24,6 @@ public class CreateSmartRequestValidator : AbstractValidator<CreateSmartRequest>
 
         RuleForEach(x => x.Options).ChildRules(option =>
         {
-            option.RuleFor(x => x.Color).NotEmpty();
             option.RuleFor(x => x.Memory).NotEmpty();
             option.RuleFor(x => x.Storage).NotEmpty();
             option.RuleFor(x => x.Stock).GreaterThan(0);

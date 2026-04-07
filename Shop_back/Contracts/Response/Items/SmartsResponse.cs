@@ -6,7 +6,8 @@ namespace Shop_back.Contracts.Response.Items
         Guid Id,
         string Title,
         string Description,
-        List<SmartVariant>  SmartVariants
+        List<SmartVariant> SmartVariants,
+        Dictionary<string, string[]> SmartImages
     );
 
 }

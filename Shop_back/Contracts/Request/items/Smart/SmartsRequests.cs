@@ -1,16 +1,14 @@
-﻿namespace Shop_back.Contracts.Request.items.Smart
+﻿using Shop_back.Core.Models.Items.Smart;
+
+namespace Shop_back.Contracts.Request.items.Smart
 {
-    public record SmartVariantOptionsRequest(
-      int Stock,
-      string Color,
-      string Memory,
-      string Storage,
-      int Price,
-      int? Discount
-  );
     public record CreateSmartRequest(
         string Title,
         string Description,
-        SmartVariantOptionsRequest[] Options
+        SmartVariantOptions[] Options,
+        Dictionary<string, string[]> SmartImages
+    );
+    public record UpdateSmartRequest(
+        Dictionary<string, string[]> SmartImages
     );
 }
