@@ -3,7 +3,7 @@ namespace Shop_back.Core.Models.Items.Smart
 {
     public class SmartModel
     {
-        public SmartModel(string title, string description, SmartVariantOptions[] options)
+        public SmartModel(string title, string description, SmartVariantOptions[] options, Dictionary<string, string[]> images)
         {
             Id = Guid.NewGuid();
             Title = title;
@@ -13,6 +13,7 @@ namespace Shop_back.Core.Models.Items.Smart
                 var newVariant = new SmartVariant(Id, option);
                 Variants.Add(newVariant);
             }
+            SmartImages = images;
         }
         public SmartModel (Guid id, string title, string description, List<SmartVariant> variants, Dictionary<string, string[]> images)
         {
@@ -32,19 +33,6 @@ namespace Shop_back.Core.Models.Items.Smart
         public static SmartModel Load(Guid id, string title, string description, List<SmartVariant> variants, Dictionary<string, string[]> images)
         {
             return new SmartModel(id, title, description, variants, images);
-        }
-        public static SmartModel Create(string title, string description, SmartVariantOptions[] options)
-        {
-            if (string.IsNullOrWhiteSpace(title))
-                throw new ArgumentException("Title cannot be empty");
-
-            if (string.IsNullOrWhiteSpace(description))
-                throw new ArgumentException("Description cannot be empty");
-
-            if (options == null || options.Length == 0)
-                throw new ArgumentException("Options cannot be empty");
-
-            return new SmartModel(title, description, options);
         }
     }
 

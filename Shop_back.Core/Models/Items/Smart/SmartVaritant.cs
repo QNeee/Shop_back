@@ -39,34 +39,10 @@ namespace Shop_back.Core.Models.Items.Smart
         public Guid SmartId { get; }
         public SmartVariantOptions Options { get; }
 
-        public static string ValidateColor(string color)
-        {
-            if (string.IsNullOrWhiteSpace(color))
-                return "Color cannot be empty.";
-
-            if (color.Length < MinColorLength || color.Length > MaxColorLength)
-                return $"Color must be between {MinColorLength} and {MaxColorLength} characters.";
-
-            return string.Empty;
-        }
         public static SmartVariant Load(Guid smartId, SmartVariantOptions options, Guid id)
         {
             return new SmartVariant(smartId, options, id);
         }
-        public static string ValidatePrice(int price)
-        {
-            if (price <= 0)
-                return $"Price cannot be {price}.";
 
-            return string.Empty;
-        }
-
-        public static string ValidateStock(int stock)
-        {
-            if (stock < 0)
-                return "Stock cannot be negative.";
-
-            return string.Empty;
-        }
     }
 }

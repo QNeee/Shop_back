@@ -7,6 +7,8 @@ namespace Shop_back.Core.Abstractions.Items.Smarts
         Task<Guid> Create(SmartModel smart);
         Task<Guid> Delete(Guid id);
         Task<List<SmartModel>> Get();
-        Task<Guid> Update(Guid id, Dictionary<string, string[]> smartImages);
+        Task<Guid> UpdateSmartImages(Guid id, Dictionary<string, string[]> smartImages);
+        Task<Guid> UpdateMainInfo(Guid id, string title, string desc);
+        Task<Guid> UpdateVariants(Guid id, List<SmartVariant> variants);
     }
 }

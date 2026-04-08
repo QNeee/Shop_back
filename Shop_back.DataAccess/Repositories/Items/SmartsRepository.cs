@@ -14,6 +14,19 @@ namespace Shop_back.DataAccess.Repositories.Items
         {
             _context = context;
         }
+        private static List<SmartVariantsEntity> MakeSmartVariantsEntity(Guid id ,List<SmartVariant> list)
+        {
+            return list.Select(v => new SmartVariantsEntity
+            {
+                Id = v.Id,
+                SmartId = id,
+                Stock = v.Options.Stock,
+                Memory = v.Options.Memory,
+                Storage = v.Options.Storage,
+                Discount = v.Options.Discount,
+                Price = v.Options.Price
+            }).ToList();
+        }
         public async Task<List<SmartModel>> Get()
         {
             var smartEntities = await _context.Smarts
@@ -52,16 +65,7 @@ namespace Shop_back.DataAccess.Repositories.Items
         }
         public async Task<Guid> Create(SmartModel smart)
         {
-            var smartVariantEntities = smart.Variants.Select(v => new SmartVariantsEntity
-            {
-                Id = v.Id,
-                SmartId = smart.Id,
-                Stock = v.Options.Stock,
-                Memory = v.Options.Memory,
-                Storage = v.Options.Storage,
-                Discount = v.Options.Discount,
-                Price = v.Options.Price
-            }).ToList();
+            var smartVariantEntities = MakeSmartVariantsEntity(smart.Id, smart.Variants);
             var smartEntity = new SmartEntity
             {
                 Id = smart.Id,
@@ -75,17 +79,23 @@ namespace Shop_back.DataAccess.Repositories.Items
 
             return smart.Id;
         }
-        public async Task<Guid> Update(Guid id, string title, string description)
+        public async Task<Guid> UpdateMainInfo(Guid id, string title, string description)
         {
             await _context.Smarts.Where(s => s.Id == id).ExecuteUpdateAsync(s => s
                 .SetProperty(b => b.Title, title)
                 .SetProperty(b => b.Description, description));
             return id;
         }
-        public async Task<Guid> Update(Guid id, Dictionary<string, string[]> smartImages)
+        public async Task<Guid> UpdateSmartImages(Guid id, Dictionary<string, string[]> smartImages)
         {
             await _context.Smarts.Where(s => s.Id == id).ExecuteUpdateAsync(s => s
                 .SetProperty(b => b.Images, JsonSerializer.Serialize(smartImages)));
+            return id;
+        }
+        public async Task<Guid> UpdateVariants(Guid id, List<SmartVariant> variants)
+        {
+            await _context.Smarts.Where(s => s.Id == id).ExecuteUpdateAsync(s => s
+                .SetProperty(b => b.Variants, MakeSmartVariantsEntity(id, variants)));
             return id;
         }
         public async Task<Guid> Delete(Guid id)
@@ -93,7 +103,6 @@ namespace Shop_back.DataAccess.Repositories.Items
             await _context.Smarts.Where(s => s.Id == id).ExecuteDeleteAsync();
             return id;
         }
-
 
     }
 }

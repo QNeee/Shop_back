@@ -8,7 +8,14 @@ namespace Shop_back.Contracts.Request.items.Smart
         SmartVariantOptions[] Options,
         Dictionary<string, string[]> SmartImages
     );
-    public record UpdateSmartRequest(
+    public record UpdateSmartImagesRequest(
         Dictionary<string, string[]> SmartImages
+    );
+    public record UpdateSmartMainInfoRequest(
+         string Title,
+         string Description
+    );
+    public record UpdateSmartVariantsRequest(
+         List<SmartVariant> Variants
     );
 }

@@ -6,12 +6,20 @@ using Shop_back.DataAccess;
 using Shop_back.DataAccess.Repositories.Items;
 using Shop_back.Middlewares;
 using Shop_back.Services.Items;
+using Shop_back.Validation.Items.Smart;
 var builder = WebApplication.CreateBuilder(args);
 
 
 
 builder.Services.AddControllers();
+// VAlidators
+
 builder.Services.AddScoped<IValidator<CreateSmartRequest>, CreateSmartRequestValidator>();
+builder.Services.AddScoped<IValidator<UpdateSmartImagesRequest>, UpdateSmartImagesRequestValidator>();
+builder.Services.AddScoped<IValidator<UpdateSmartMainInfoRequest>, UpdateSmartMainInfoRequestValidator>();
+builder.Services.AddScoped<IValidator<UpdateSmartVariantsRequest>, UpdateSmartVariantsRequestValidator>();
+
+//=======
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ShopBackDbContext>(
