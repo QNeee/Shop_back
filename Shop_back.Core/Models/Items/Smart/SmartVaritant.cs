@@ -1,12 +1,19 @@
 ﻿
+
 namespace Shop_back.Core.Models.Items.Smart
 {
+    public class Discount
+    {
+        public int Percent { get; set; }
+        public DateTime ExpiresAt { get; set; }
+
+    }
     public class SmartVariantOptions
     {
         public int Stock { get; set; }
         public string Memory { get; set; } = string.Empty;
         public string Storage { get; set; } = string.Empty;
-        public int? Discount { get; set; }
+        public Discount? Discount  { get; set; }
         public int Price { get; set; }
         public SmartVariantOptions() { }
         public SmartVariantOptions(
@@ -14,7 +21,7 @@ namespace Shop_back.Core.Models.Items.Smart
             string memory,
             string storage,
             int price,
-            int? discount = null)
+            Discount? discount = null)
         {
             Stock = stock;
             Memory = memory;

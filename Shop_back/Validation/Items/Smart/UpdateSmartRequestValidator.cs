@@ -7,6 +7,7 @@ namespace Shop_back.Validation.Items.Smart
     {
         private readonly int Min_Length_STR = 5;
         private readonly int Max_Length_STR = 500;
+      
         public UpdateSmartMainInfoRequestValidator()
         {
             RuleFor(x => x.Title)
@@ -22,6 +23,7 @@ namespace Shop_back.Validation.Items.Smart
     }
     public class UpdateSmartVariantsRequestValidator : AbstractValidator<UpdateSmartVariantsRequest>
     {
+        private readonly int Max_Discount = 100;
         public UpdateSmartVariantsRequestValidator()
         {
             RuleFor(x => x.Variants).NotNull().NotEmpty();
@@ -35,8 +37,11 @@ namespace Shop_back.Validation.Items.Smart
                 variant.RuleFor(x => x.Options.Stock).GreaterThan(0);
                 variant.RuleFor(x => x.Options.Price).GreaterThan(0);
                 variant.RuleFor(x => x.Options.Discount)
-                    .InclusiveBetween(0, 100)
-                    .When(x => x.Options.Discount.HasValue);
+            .Must(d =>
+            d == null ||
+         (d.Percent >= 0 && d.Percent <= Max_Discount && d.ExpiresAt > DateTime.Now)
+     )
+     .WithMessage($"Discount percent must be between 0 and {Max_Discount} and expiration must be in the future");
             });
 
         }

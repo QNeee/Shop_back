@@ -1,15 +1,29 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Shop_back.Contracts.Request.items.Smart;
+using Shop_back.Core.Abstractions.Items;
 using Shop_back.Core.Abstractions.Items.Smarts;
 using Shop_back.DataAccess;
 using Shop_back.DataAccess.Repositories.Items;
 using Shop_back.Middlewares;
+using Shop_back.Services;
 using Shop_back.Services.Items;
 using Shop_back.Validation.Items.Smart;
 var builder = WebApplication.CreateBuilder(args);
-
-
+var alowFront = "AllowFrontend";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(alowFront, policy =>
+    {
+        policy
+            .SetIsOriginAllowed(origin =>
+            {
+                return new Uri(origin).Host == "localhost";
+            })
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddControllers();
 // VAlidators
@@ -29,8 +43,10 @@ builder.Services.AddDbContext<ShopBackDbContext>(
     }
 );
 builder.Services.AddScoped<ISmartsService, SmartServices>();
-builder.Services.AddScoped<ISmartsRepository, SmartsRepository>(); 
+builder.Services.AddScoped<ISmartsRepository, SmartsRepository>();
+builder.Services.AddScoped<ISharesService, SharesService>();
 var app = builder.Build();
+app.UseCors(alowFront);
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 if (app.Environment.IsDevelopment())
 {

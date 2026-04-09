@@ -29,8 +29,11 @@ public class CreateSmartRequestValidator : AbstractValidator<CreateSmartRequest>
             option.RuleFor(x => x.Stock).GreaterThan(0);
             option.RuleFor(x => x.Price).GreaterThan(0);
             option.RuleFor(x => x.Discount)
-                .InclusiveBetween(0, Max_Discount)
-                .When(x => x.Discount.HasValue);
+            .Must(d =>
+            d == null ||
+         (d.Percent >= 0 && d.Percent <= Max_Discount && d.ExpiresAt > DateTime.Now)
+     )
+     .WithMessage($"Discount percent must be between 0 and {Max_Discount} and expiration must be in the future");
         });
     }
 }

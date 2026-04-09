@@ -23,9 +23,47 @@ namespace Shop_back.DataAccess.Repositories.Items
                 Stock = v.Options.Stock,
                 Memory = v.Options.Memory,
                 Storage = v.Options.Storage,
-                Discount = v.Options.Discount,
+                Discount = JsonSerializer.Serialize(v.Options.Discount),
                 Price = v.Options.Price
             }).ToList();
+        }
+
+        private static SmartVariant MakeSmartVariant(SmartVariantsEntity entity)
+        {
+            var optionsJson = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            Discount? discount = null;
+
+            if (!string.IsNullOrWhiteSpace(entity.Discount))
+            {
+                discount = JsonSerializer.Deserialize<Discount>(entity.Discount, optionsJson);
+            }
+            var options = new SmartVariantOptions(
+                entity.Stock,
+                entity.Memory,
+                entity.Storage,
+                entity.Price,
+                discount
+            );
+            return SmartVariant.Load(entity.SmartId, options, entity.Id);
+        }
+        private static Dictionary<string, string[]> MakeSmartImages(string images)
+        {
+            return JsonSerializer.Deserialize<Dictionary<string, string[]>>(string.IsNullOrWhiteSpace(images) ? "{}" : images) ?? new Dictionary<string, string[]>();
+        }
+        private static SmartModel MakeSmartModel(SmartEntity e , List<SmartVariantsEntity> sVe)
+        {
+            return SmartModel.Load(
+                    e.Id,
+                    e.Title,
+                    e.Description,
+                    sVe
+                        .Where(sE => sE.SmartId == e.Id)
+                        .Select(sE => MakeSmartVariant(sE)).ToList(),
+                    MakeSmartImages(e.Images)
+                    );
         }
         public async Task<List<SmartModel>> Get()
         {
@@ -38,30 +76,7 @@ namespace Shop_back.DataAccess.Repositories.Items
                 .ToListAsync();
 
             return smartEntities.Select(e =>
-                SmartModel.Load(
-                    e.Id,
-                    e.Title,
-                    e.Description,
-                    smartVariantEntities
-                        .Where(sv => sv.SmartId == e.Id)
-                        .Select(s => SmartVariant.Load(
-                            s.SmartId,
-                            new SmartVariantOptions(
-                                s.Stock,
-                                s.Memory,
-                                s.Storage,
-                                s.Price,
-                                s.Discount
-                            ),
-                            s.Id
-                        ))
-                        .ToList(),
-
-                    JsonSerializer.Deserialize<Dictionary<string, string[]>>(
-    string.IsNullOrWhiteSpace(e.Images) ? "{}" : e.Images
-) ?? new Dictionary<string, string[]>()
-                )
-            ).ToList();
+                MakeSmartModel(e, smartVariantEntities)).ToList();
         }
         public async Task<Guid> Create(SmartModel smart)
         {
@@ -104,5 +119,22 @@ namespace Shop_back.DataAccess.Repositories.Items
             return id;
         }
 
+        public async Task<List<SmartModel>> GetSharesSmarts()
+        {
+            var smartVariants = await _context.SmartVariants
+                .AsNoTracking()
+                .Where(sv => sv.Discount != null)
+                .ToListAsync();
+
+            var smartIds = smartVariants.Select(sv => sv.SmartId).Distinct().ToList();
+
+            var smartEntities = await _context.Smarts
+                .AsNoTracking()
+                .Where(s => smartIds.Contains(s.Id))
+                .ToListAsync();
+
+            return smartEntities.Select(e =>
+               MakeSmartModel(e, smartVariants)).ToList();
+        }
     }
 }

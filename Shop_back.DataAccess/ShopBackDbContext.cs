@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Shop_back.Core.Models.Items.Smart;
 using Shop_back.DataAccess.Entities.Items;
+using System.Text.Json;
 
 namespace Shop_back.DataAccess
 {
@@ -13,4 +15,5 @@ namespace Shop_back.DataAccess
         public DbSet<SmartEntity> Smarts { get; set; }
         public DbSet<SmartVariantsEntity> SmartVariants { get; set; }
     }
+
 }

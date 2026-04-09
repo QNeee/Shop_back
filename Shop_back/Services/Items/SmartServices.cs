@@ -1,7 +1,4 @@
 ﻿
-
-using FluentValidation;
-using Shop_back.Contracts.Request.items.Smart;
 using Shop_back.Core.Abstractions.Items.Smarts;
 using Shop_back.Core.Models.Items.Smart;
 namespace Shop_back.Services.Items

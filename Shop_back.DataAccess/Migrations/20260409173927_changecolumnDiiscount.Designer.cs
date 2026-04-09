@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Shop_back.DataAccess;
@@ -11,9 +12,11 @@ using Shop_back.DataAccess;
 namespace Shop_back.DataAccess.Migrations
 {
     [DbContext(typeof(ShopBackDbContext))]
-    partial class ShopBackDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260409173927_changecolumnDiiscount")]
+    partial class changecolumnDiiscount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,9 +54,6 @@ namespace Shop_back.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Discount")
-                        .HasColumnType("text");
-
                     b.Property<string>("Memory")
                         .IsRequired()
                         .HasColumnType("text");
@@ -85,6 +85,27 @@ namespace Shop_back.DataAccess.Migrations
                         .HasForeignKey("SmartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.OwnsOne("Shop_back.Core.Models.Items.Smart.Discount", "Discount", b1 =>
+                        {
+                            b1.Property<Guid>("SmartVariantsEntityId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateTime>("ExpiresAt")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<int>("Percent")
+                                .HasColumnType("integer");
+
+                            b1.HasKey("SmartVariantsEntityId");
+
+                            b1.ToTable("SmartVariants");
+
+                            b1.WithOwner()
+                                .HasForeignKey("SmartVariantsEntityId");
+                        });
+
+                    b.Navigation("Discount");
 
                     b.Navigation("Smart");
                 });
