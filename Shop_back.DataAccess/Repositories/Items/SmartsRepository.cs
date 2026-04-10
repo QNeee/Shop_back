@@ -65,6 +65,7 @@ namespace Shop_back.DataAccess.Repositories.Items
                 InStock = e.Stock > 0,
                 Price = e.Price,
                 Images = MakeSmartImages(images),
+                InStockCount = e.Stock,
                 Type = "smart"
             };
             return sharesItem;
