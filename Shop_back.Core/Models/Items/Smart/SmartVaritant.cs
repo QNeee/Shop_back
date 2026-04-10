@@ -13,7 +13,7 @@ namespace Shop_back.Core.Models.Items.Smart
         public int Stock { get; set; }
         public string Memory { get; set; } = string.Empty;
         public string Storage { get; set; } = string.Empty;
-        public Discount? Discount  { get; set; }
+        public Discount ? Discount { get; set; } 
         public int Price { get; set; }
         public SmartVariantOptions() { }
         public SmartVariantOptions(

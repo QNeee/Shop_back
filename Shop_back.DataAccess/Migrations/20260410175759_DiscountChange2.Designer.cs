@@ -12,8 +12,8 @@ using Shop_back.DataAccess;
 namespace Shop_back.DataAccess.Migrations
 {
     [DbContext(typeof(ShopBackDbContext))]
-    [Migration("20260409175809_changecolumnDiiscount1")]
-    partial class changecolumnDiiscount1
+    [Migration("20260410175759_DiscountChange2")]
+    partial class DiscountChange2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,7 +55,8 @@ namespace Shop_back.DataAccess.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Discount")
-                        .HasColumnType("jsonb");
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Memory")
                         .IsRequired()

@@ -11,7 +11,7 @@ namespace Shop_back.Services
         {
             _smartsReposiroty = smartsReposiroty;
         }
-        public Task<List<SmartModel>> GetSharesSmarts()
+        public Task<List<SharesItem>> GetSharesSmarts()
         {
             return _smartsReposiroty.GetSharesSmarts();
         }

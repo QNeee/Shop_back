@@ -5,7 +5,7 @@
 namespace Shop_back.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class changecolumnDiiscount2 : Migration
+    public partial class DiscountChange2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,9 +14,10 @@ namespace Shop_back.DataAccess.Migrations
                 name: "Discount",
                 table: "SmartVariants",
                 type: "text",
-                nullable: true,
+                nullable: false,
+                defaultValue: "",
                 oldClrType: typeof(string),
-                oldType: "jsonb",
+                oldType: "text",
                 oldNullable: true);
         }
 
@@ -26,11 +27,10 @@ namespace Shop_back.DataAccess.Migrations
             migrationBuilder.AlterColumn<string>(
                 name: "Discount",
                 table: "SmartVariants",
-                type: "jsonb",
+                type: "text",
                 nullable: true,
                 oldClrType: typeof(string),
-                oldType: "text",
-                oldNullable: true);
+                oldType: "text");
         }
     }
 }

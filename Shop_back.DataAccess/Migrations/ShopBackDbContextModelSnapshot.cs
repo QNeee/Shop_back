@@ -52,6 +52,7 @@ namespace Shop_back.DataAccess.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Discount")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Memory")

@@ -6,6 +6,6 @@ namespace Shop_back.Core.Abstractions.Items
 {
     public interface ISharesService
     {
-        Task<List<SmartModel>> GetSharesSmarts();
+        Task<List<SharesItem>> GetSharesSmarts();
     }
 }

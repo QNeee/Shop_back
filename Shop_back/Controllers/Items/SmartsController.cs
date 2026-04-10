@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Shop_back.Contracts.Request.items.Smart;
 using Shop_back.Contracts.Response.Items;
 using Shop_back.Core.Abstractions.Items.Smarts;
+using System.Text.Json;
 
 namespace Shop_back.Controllers.Items
 {
@@ -48,7 +49,6 @@ namespace Shop_back.Controllers.Items
             var errors = await ValidateRequest(_createValidator, req);
             if (errors.Count > 0) return BadRequest(new { Errors = errors });
             var smartId = await _service.CreateSmart(req.Title, req.Description, req.Options, req.SmartImages);
-
             return Ok(smartId);
         }
         [HttpPut("images/{id:guid}")]

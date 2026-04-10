@@ -1,5 +1,7 @@
 ﻿
 
+using Shop_back.Core.Models.Items.Smart;
+
 namespace Shop_back.DataAccess.Entities.Items
 {
     public class SmartVariantsEntity
@@ -10,7 +12,7 @@ namespace Shop_back.DataAccess.Entities.Items
         public string Memory { get; set; } = string.Empty;
         public string Storage { get; set; } = string.Empty;
         public int Price { get; set; }
-        public string? Discount { get; set; }
+        public string  Discount { get; set; } = string.Empty;
         public SmartEntity Smart { get; set; } = null!;
 
     }

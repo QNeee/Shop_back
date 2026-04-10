@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Shop_back.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class DiscountChange1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,8 @@ namespace Shop_back.DataAccess.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false)
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Images = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,11 +32,10 @@ namespace Shop_back.DataAccess.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     SmartId = table.Column<Guid>(type: "uuid", nullable: false),
                     Stock = table.Column<int>(type: "integer", nullable: false),
-                    Color = table.Column<string>(type: "text", nullable: false),
                     Memory = table.Column<string>(type: "text", nullable: false),
                     Storage = table.Column<string>(type: "text", nullable: false),
                     Price = table.Column<int>(type: "integer", nullable: false),
-                    Discount = table.Column<int>(type: "integer", nullable: true)
+                    Discount = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

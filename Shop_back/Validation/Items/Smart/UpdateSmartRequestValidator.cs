@@ -7,7 +7,7 @@ namespace Shop_back.Validation.Items.Smart
     {
         private readonly int Min_Length_STR = 5;
         private readonly int Max_Length_STR = 500;
-      
+
         public UpdateSmartMainInfoRequestValidator()
         {
             RuleFor(x => x.Title)

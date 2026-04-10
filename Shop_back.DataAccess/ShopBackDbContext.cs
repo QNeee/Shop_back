@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Shop_back.Core.Models.Items.Smart;
 using Shop_back.DataAccess.Entities.Items;
-using System.Text.Json;
 
 namespace Shop_back.DataAccess
 {

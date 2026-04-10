@@ -12,8 +12,8 @@ using Shop_back.DataAccess;
 namespace Shop_back.DataAccess.Migrations
 {
     [DbContext(typeof(ShopBackDbContext))]
-    [Migration("20260409180440_changecolumnDiiscount2")]
-    partial class changecolumnDiiscount2
+    [Migration("20260410175135_DiscountChange1")]
+    partial class DiscountChange1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

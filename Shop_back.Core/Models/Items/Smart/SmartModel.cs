@@ -15,12 +15,12 @@ namespace Shop_back.Core.Models.Items.Smart
             }
             SmartImages = images;
         }
-        public SmartModel (Guid id, string title, string description, List<SmartVariant> variants, Dictionary<string, string[]> images)
+        public SmartModel(Guid id, string title, string description, List<SmartVariant> variants, Dictionary<string, string[]> images)
         {
             Id = id;
             Title = title;
             Description = description;
-            Variants= variants;
+            Variants = variants;
             SmartImages = images;
         }
         public const int MinStrLength = 3;
