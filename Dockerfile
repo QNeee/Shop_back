@@ -3,8 +3,8 @@ WORKDIR /src
 
 COPY . .
 
-RUN dotnet restore shop_back/Shop_back.csproj
-RUN dotnet publish shop_back/Shop_back.csproj -c Release -o /app/publish
+RUN dotnet restore Shop_back/Shop_back.csproj
+RUN dotnet publish Shop_back/Shop_back.csproj -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
