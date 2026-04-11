@@ -1,5 +1,7 @@
 ﻿
 
+using Shop_back.Core.Abstractions;
+
 namespace Shop_back.Contracts.Response
 {
 
@@ -8,6 +10,6 @@ namespace Shop_back.Contracts.Response
         public List<SharesItem> SharesSmarts { get; set; } = new List<SharesItem>();
     }
     public record GetSharesResponse(
-       SmartsShares SmartsShares
+       SmartsShares Smarts
     );
 }

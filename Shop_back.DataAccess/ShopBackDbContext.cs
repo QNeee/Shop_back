@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Shop_back.DataAccess.Entities.Items;
+using Shop_back.DataAccess.Entities.Product;
 
 namespace Shop_back.DataAccess
 {
@@ -10,8 +10,7 @@ namespace Shop_back.DataAccess
         {
 
         }
-        public DbSet<SmartEntity> Smarts { get; set; }
-        public DbSet<SmartVariantsEntity> SmartVariants { get; set; }
+        public DbSet<ProductEntity> Products { get; set; }
     }
 
 }

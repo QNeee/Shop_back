@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Shop_back.DataAccess;
@@ -11,9 +12,11 @@ using Shop_back.DataAccess;
 namespace Shop_back.DataAccess.Migrations
 {
     [DbContext(typeof(ShopBackDbContext))]
-    partial class ShopBackDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260411203049_Start")]
+    partial class Start
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

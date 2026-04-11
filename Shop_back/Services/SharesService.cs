@@ -1,19 +1,18 @@
-﻿using Shop_back.Core.Abstractions.Items;
-using Shop_back.Core.Abstractions.Items.Smarts;
-using Shop_back.Core.Models.Items.Smart;
+﻿using Shop_back.Core.Abstractions;
+using Shop_back.Core.Abstractions.Product;
 
 namespace Shop_back.Services
 {
     public class SharesService : ISharesService
     {
-        private readonly ISmartsRepository _smartsReposiroty;
-        public SharesService(ISmartsRepository smartsReposiroty)
+        private readonly IProductService _productService;
+        public SharesService(IProductService productService)
         {
-            _smartsReposiroty = smartsReposiroty;
+            _productService = productService;
         }
-        public Task<List<SharesItem>> GetSharesSmarts()
+        public async Task<List<SharesItem>> GetSharesProducts()
         {
-            return _smartsReposiroty.GetSharesSmarts();
+            return new List<SharesItem>();
         }
     }
 }
