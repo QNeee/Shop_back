@@ -2,13 +2,15 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-# копіюємо csproj і відновлюємо залежності
-COPY *.csproj ./
-RUN dotnet restore
+# копіюємо solution folder
+COPY shop_back/*.csproj ./shop_back/
 
-# копіюємо весь код і білдимо
-COPY . ./
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet restore shop_back/Shop_back.csproj
+
+# копіюємо весь код
+COPY . .
+
+RUN dotnet publish shop_back/Shop_back.csproj -c Release -o /app/publish
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
@@ -16,7 +18,6 @@ WORKDIR /app
 
 COPY --from=build /app/publish .
 
-# важливо для хостингу (Render/Fly/etc)
 ENV ASPNETCORE_URLS=http://0.0.0.0:8080
 
 EXPOSE 8080
