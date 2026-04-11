@@ -36,10 +36,26 @@ builder.Services.AddScoped<IValidator<UpdateSmartVariantsRequest>, UpdateSmartVa
 //=======
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+var dbUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+var uri = new Uri(dbUrl ?? "");
+
+var userInfo = uri.UserInfo.Split(':');
+
+var connStr =
+    $"Host={uri.Host};" +
+    $"Port=5432;" +
+    $"Database={uri.AbsolutePath.TrimStart('/')};" +
+    $"Username={userInfo[0]};" +
+    $"Password={userInfo[1]};" +
+    $"SSL Mode=Require;" +
+    $"Trust Server Certificate=true";
 builder.Services.AddDbContext<ShopBackDbContext>(
     options =>
     {
-        options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(ShopBackDbContext)));
+        options.UseNpgsql(connStr);
+        //options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(ShopBackDbContext))); development
+
     }
 );
 builder.Services.AddScoped<ISmartsService, SmartServices>();
