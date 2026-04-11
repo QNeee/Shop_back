@@ -39,12 +39,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 var dbUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
-if (string.IsNullOrWhiteSpace(dbUrl))
-{
-    throw new Exception("DATABASE_URL is missing");
-}
-
-var uri = new Uri(dbUrl);
+var uri = new Uri(dbUrl ?? "");
 
 var userInfo = uri.UserInfo.Split(':');
 
@@ -68,6 +63,11 @@ builder.Services.AddScoped<ISmartsService, SmartServices>();
 builder.Services.AddScoped<ISmartsRepository, SmartsRepository>();
 builder.Services.AddScoped<ISharesService, SharesService>();
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ShopBackDbContext>();
+    db.Database.Migrate();
+}
 app.UseCors(alowFront);
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 if (app.Environment.IsDevelopment())
@@ -76,7 +76,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection(); development
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
