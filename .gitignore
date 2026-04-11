@@ -80,8 +80,7 @@ appsettings.Development.json
 # Secrets
 secrets.json
 
-# Docker
-docker-compose.override.yml
+
 
 # Node (якщо є фронт усередині проекту)
 node_modules/
