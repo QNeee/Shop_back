@@ -39,7 +39,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 var dbUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
-var uri = new Uri(dbUrl ?? "");
+if (string.IsNullOrWhiteSpace(dbUrl))
+{
+    throw new Exception("DATABASE_URL is missing");
+}
+
+var uri = new Uri(dbUrl);
 
 var userInfo = uri.UserInfo.Split(':');
 
@@ -71,7 +76,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection(); development
 
 app.UseAuthorization();
 
