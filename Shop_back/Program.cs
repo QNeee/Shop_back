@@ -16,10 +16,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy(alowFront, policy =>
     {
         policy
-            .SetIsOriginAllowed(origin =>
-            {
-                return new Uri(origin).Host == "localhost";
-            })
+            .WithOrigins(
+                "http://localhost:5173",
+                "http://localhost:5174",
+                "https://qneee.github.io"
+            )
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
