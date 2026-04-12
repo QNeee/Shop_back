@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop_back.DataAccess.Entities.Product;
+using Shop_back.DataAccess.Entities.Shares;
 
 namespace Shop_back.DataAccess
 {
@@ -11,6 +12,7 @@ namespace Shop_back.DataAccess
 
         }
         public DbSet<ProductEntity> Products { get; set; }
+        public DbSet<SharesEntity> Shares { get; set; }
     }
 
 }

@@ -12,8 +12,8 @@ using Shop_back.DataAccess;
 namespace Shop_back.DataAccess.Migrations
 {
     [DbContext(typeof(ShopBackDbContext))]
-    [Migration("20260411203049_Start")]
-    partial class Start
+    [Migration("20260412041354_AddShareу")]
+    partial class AddShareу
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,6 +54,40 @@ namespace Shop_back.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("Shop_back.DataAccess.Entities.Shares.SharesEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Discount")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("VariantId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Shares");
+                });
+
+            modelBuilder.Entity("Shop_back.DataAccess.Entities.Shares.SharesEntity", b =>
+                {
+                    b.HasOne("Shop_back.DataAccess.Entities.Product.ProductEntity", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 #pragma warning restore 612, 618
         }

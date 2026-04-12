@@ -52,6 +52,40 @@ namespace Shop_back.DataAccess.Migrations
 
                     b.ToTable("Products");
                 });
+
+            modelBuilder.Entity("Shop_back.DataAccess.Entities.Shares.SharesEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Discount")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("VariantId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Shares");
+                });
+
+            modelBuilder.Entity("Shop_back.DataAccess.Entities.Shares.SharesEntity", b =>
+                {
+                    b.HasOne("Shop_back.DataAccess.Entities.Product.ProductEntity", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
 #pragma warning restore 612, 618
         }
     }

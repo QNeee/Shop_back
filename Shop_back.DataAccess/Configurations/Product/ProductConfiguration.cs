@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shop_back.DataAccess.Entities.Product;
 using Shop_back.DataAccess.Repositories.Product;
 
-namespace Shop_back.DataAccess.Configurations.Items
+namespace Shop_back.DataAccess.Configurations.Product
 {
     public class ProductConfiguration : IEntityTypeConfiguration<ProductEntity>
     {

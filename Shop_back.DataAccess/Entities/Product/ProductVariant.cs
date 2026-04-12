@@ -1,6 +1,5 @@
 ﻿
-
-using Shop_back.Core.Abstractions;
+using Shop_back.Core.Models.Shares;
 
 namespace Shop_back.DataAccess.Entities.Product
 {

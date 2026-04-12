@@ -1,14 +1,17 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Shop_back.Contracts.Request.Product;
-using Shop_back.Core.Abstractions;
+using Shop_back.Contracts.Request.Shares;
 using Shop_back.Core.Abstractions.Product;
+using Shop_back.Core.Abstractions.Shares;
 using Shop_back.DataAccess;
 using Shop_back.DataAccess.Repositories.Product;
+using Shop_back.DataAccess.Repositories.Shares;
 using Shop_back.Middlewares;
-using Shop_back.Services;
 using Shop_back.Services.Product;
+using Shop_back.Services.Shares;
 using Shop_back.Validation.Product;
+using Shop_back.Validation.Shares;
 var builder = WebApplication.CreateBuilder(args);
 var alowFront = "AllowFrontend";
 builder.Services.AddCors(options =>
@@ -32,40 +35,42 @@ builder.Services.AddScoped<IValidator<CreateProductRequest>, CreateProductReques
 builder.Services.AddScoped<IValidator<UpdateProductImagesRequest>, UpdateProductImagesRequestValidator>();
 builder.Services.AddScoped<IValidator<UpdateProductMainInfoRequest>, UpdateProductMainInfoRequestValidator>();
 builder.Services.AddScoped<IValidator<UpdateProductVariantsRequest>, UpdateProductVariantsRequestValidator>();
+builder.Services.AddScoped<IValidator<CreateShareRequset>, CreateShareRequestValdation>();
 //=======
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//var dbUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+var dbUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
-//var uri = new Uri(dbUrl ?? "");
+var uri = new Uri(dbUrl ?? "");
 
-//var userInfo = uri.UserInfo.Split(':');
+var userInfo = uri.UserInfo.Split(':');
 
-//var connStr =
-//    $"Host={uri.Host};" +
-//    $"Port=5432;" +
-//    $"Database={uri.AbsolutePath.TrimStart('/')};" +
-//    $"Username={userInfo[0]};" +
-//    $"Password={userInfo[1]};" +
-//    $"SSL Mode=Require;" +
-//    $"Trust Server Certificate=true";
+var connStr =
+    $"Host={uri.Host};" +
+    $"Port=5432;" +
+    $"Database={uri.AbsolutePath.TrimStart('/')};" +
+    $"Username={userInfo[0]};" +
+    $"Password={userInfo[1]};" +
+    $"SSL Mode=Require;" +
+    $"Trust Server Certificate=true";
 builder.Services.AddDbContext<ShopBackDbContext>(
     options =>
     {
-       // options.UseNpgsql(connStr);
-        options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(ShopBackDbContext))); //development
+        options.UseNpgsql(connStr);
+        //options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(ShopBackDbContext))); //development
 
     }
 );
 builder.Services.AddScoped<ISharesService, SharesService>();
+builder.Services.AddScoped<ISharesRepository, SharesRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 var app = builder.Build();
-//using (var scope = app.Services.CreateScope())
-//{
-//    var db = scope.ServiceProvider.GetRequiredService<ShopBackDbContext>();
-//    db.Database.Migrate();
-//}
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ShopBackDbContext>();
+    db.Database.Migrate();
+}
 app.UseCors(alowFront);
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 if (app.Environment.IsDevelopment())
