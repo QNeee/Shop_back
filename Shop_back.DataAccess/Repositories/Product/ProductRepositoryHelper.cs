@@ -17,9 +17,13 @@ namespace Shop_back.DataAccess.Repositories.Product
         {
             return JsonSerializer.Deserialize<List<ProductModelVariant>>(string.IsNullOrWhiteSpace(variants) ? "[]" : variants) ?? new List<ProductModelVariant>();
         }
-        public static ProductModel MakeProductModel(ProductEntity p)
+        public static ProductModel MakeProductModel(ProductEntity p , bool discount = false)
         {
-            return new ProductModel(p.Id, p.Title, p.Description, MakeProductImages(p.Images), MakeProductVariants(p.Variants), p.Type);
+            return new ProductModel(p.Id, p.Title, p.Description, MakeProductImages(p.Images), MakeProductVariants(p.Variants), p.Type, MakeProductOptions(p.Options), discount);
+        }
+        public static Dictionary<string, string> MakeProductOptions(string options)
+        {
+            return JsonSerializer.Deserialize<Dictionary<string, string>>(string.IsNullOrWhiteSpace(options) ? "{}" : options) ?? new Dictionary<string, string>();
         }
         public static ProductEntity MakeProductEntity(ProductModel model)
         {
@@ -30,7 +34,8 @@ namespace Shop_back.DataAccess.Repositories.Product
                 Description = model.Description,
                 Images = JsonSerializer.Serialize(model.Images),
                 Variants = JsonSerializer.Serialize(model.Variants),
-                Type = model.Type
+                Type = model.Type,
+                
             };
         }
 

@@ -38,6 +38,21 @@ namespace Shop_back.Validation.Product
 
         }
     }
+    public class UpdateProductOptionsRequestValidator : AbstractValidator<UpdateProductOptionsRequest>
+    {
+        public UpdateProductOptionsRequestValidator()
+        {
+            RuleFor(x => x.Options)
+                .NotNull()
+                .NotEmpty();
+            RuleForEach(x => x.Options)
+                .Must(x => !string.IsNullOrWhiteSpace(x.Key))
+                .WithMessage("Option key cannot be empty.");
+            RuleForEach(x => x.Options)
+                .Must(x => !string.IsNullOrWhiteSpace(x.Value))
+                .WithMessage("Option value cannot be empty.");
+        }
+    }
     public class UpdateProductImagesRequestValidator : AbstractValidator<UpdateProductImagesRequest>
     {
         public UpdateProductImagesRequestValidator()

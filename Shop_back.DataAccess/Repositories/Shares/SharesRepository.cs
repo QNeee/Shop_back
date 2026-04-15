@@ -3,7 +3,6 @@
 using Microsoft.EntityFrameworkCore;
 using Shop_back.Core.Abstractions.Shares;
 using Shop_back.Core.Models.Shares;
-using Shop_back.DataAccess.Entities.Shares;
 using System.Text.Json;
 
 namespace Shop_back.DataAccess.Repositories.Shares

@@ -8,6 +8,7 @@ namespace Shop_back.DataAccess.Entities.Product
         public string Description { get; set; } = string.Empty;
         public string Images { get; set; } = "{}";
         public string Type { get; set; } = string.Empty;
-        public string Variants { get; set; } = "[]";  
+        public string Variants { get; set; } = "[]";
+        public string Options { get; set; } = "{}";
     }
 }

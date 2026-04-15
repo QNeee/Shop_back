@@ -11,6 +11,7 @@ namespace Shop_back.DataAccess.Repositories.Product
         public ProductRepository(ShopBackDbContext context)
         {
             _context = context;
+
         }
 
         public async Task<Guid> Create(ProductModel product)
@@ -29,33 +30,54 @@ namespace Shop_back.DataAccess.Repositories.Product
 
         public async Task<List<ProductModel>> Get()
         {
-            return await _context.Products.Select(p => ProductRepositoryHelper.MakeProductModel(p)).ToListAsync();
+            return await _context.Products
+                            .Select(p => ProductRepositoryHelper.MakeProductModel(
+                                p,
+                                _context.Shares.Any(s => s.ProductId == p.Id)
+                            ))
+                            .ToListAsync();
+        }
+
+        public async Task<List<ProductModel>> GetByFilter(string filter)
+        {
+            return await _context.Products
+                .Where(p => p.Type == filter)
+                .Select(p => ProductRepositoryHelper.MakeProductModel(
+                    p,
+                    _context.Shares.Any(s => s.ProductId == p.Id)
+                ))
+                .ToListAsync();
         }
 
         public async Task<ProductModel?> GetById(Guid id)
         {
             return await _context.Products.Where(p => p.Id == id).Select(p => ProductRepositoryHelper.MakeProductModel(p)).FirstOrDefaultAsync();
         }
-        public async Task<Guid> UpdateMainInfo(Guid id, string title, string description)
+        public async Task<Guid> UpdateProductMainInfo(Guid id, string title, string description)
         {
             await _context.Products.Where(s => s.Id == id).ExecuteUpdateAsync(s => s
                 .SetProperty(b => b.Title, title)
                 .SetProperty(b => b.Description, description));
             return id;
         }
-        public async Task<Guid> UpdateSmartImages(Guid id, Dictionary<string, string[]> smartImages)
+        public async Task<Guid> UpdateProductImages(Guid id, Dictionary<string, string[]> smartImages)
         {
             await _context.Products.Where(s => s.Id == id).ExecuteUpdateAsync(s => s
                 .SetProperty(b => b.Images, JsonSerializer.Serialize(smartImages)));
             return id;
         }
-        public async Task<Guid> UpdateVariants(Guid id, List<ProductModelVariant> variants)
+        public async Task<Guid> UpdateProductVariants(Guid id, List<ProductModelVariant> variants)
         {
             await _context.Products.Where(s => s.Id == id).ExecuteUpdateAsync(s => s
                 .SetProperty(b => b.Variants, JsonSerializer.Serialize(variants)));
             return id;
         }
 
-
+        public async Task<Guid> UpdateProductOptions(Guid id, Dictionary<string, string> options)
+        {
+            await _context.Products.Where(s => s.Id == id).ExecuteUpdateAsync(s => s
+                .SetProperty(b => b.Options, JsonSerializer.Serialize(options)));
+            return id;
+        }
     }
 }

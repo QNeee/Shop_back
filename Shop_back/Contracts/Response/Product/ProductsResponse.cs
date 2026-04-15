@@ -1,13 +1,9 @@
 ﻿
-using Shop_back.DataAccess.Entities.Product;
+using Shop_back.Core.Models.Product;
 
 namespace Shop_back.Contracts.Response.Product
 {
     public record GetAllProductsResponse(
-       Guid Id,
-       string Title,
-       string Description,
-       List<ProductVariant> Variants,
-       Dictionary<string, string[]> Images
+      List<ProductModel> Products
    );
 }

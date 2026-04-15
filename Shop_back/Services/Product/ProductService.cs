@@ -33,20 +33,30 @@ namespace Shop_back.Services.Product
             return await _productRepository.GetById(id);
         }
 
-
-        public async Task<Guid> UpdateSmartImages(Guid id, Dictionary<string, string[]> SmartImages)
+        public async Task<List<ProductModel>> GetProducts(string filter)
         {
-            return  await _productRepository.UpdateSmartImages(id, SmartImages);
+            return await _productRepository.GetByFilter(filter);
         }
 
-        public async Task<Guid> UpdateSmartMainInfo(Guid id, string title, string desc)
+
+        public async Task<Guid> UpdateProductImages(Guid id, Dictionary<string, string[]> SmartImages)
         {
-            return await _productRepository.UpdateMainInfo(id, title, desc);
+            return  await _productRepository.UpdateProductImages(id, SmartImages);
         }
 
-        public async Task<Guid> UpdateSmartVariants(Guid id, List<ProductModelVariant> variants)
+        public async Task<Guid> UpdateProductMainInfo(Guid id, string title, string desc)
         {
-            return await _productRepository.UpdateVariants(id, variants);
+            return await _productRepository.UpdateProductMainInfo(id, title, desc);
+        }
+
+        public async Task<Guid> UpdateProductOptions(Guid id, Dictionary<string, string> options)
+        {
+            return await _productRepository.UpdateProductOptions(id, options);
+        }
+
+        public async Task<Guid> UpdateProductVariants(Guid id, List<ProductModelVariant> variants)
+        {
+            return await _productRepository.UpdateProductVariants(id, variants);
         }
     }
 }

@@ -35,6 +35,7 @@ builder.Services.AddScoped<IValidator<CreateProductRequest>, CreateProductReques
 builder.Services.AddScoped<IValidator<UpdateProductImagesRequest>, UpdateProductImagesRequestValidator>();
 builder.Services.AddScoped<IValidator<UpdateProductMainInfoRequest>, UpdateProductMainInfoRequestValidator>();
 builder.Services.AddScoped<IValidator<UpdateProductVariantsRequest>, UpdateProductVariantsRequestValidator>();
+builder.Services.AddScoped<IValidator<UpdateProductOptionsRequest>, UpdateProductOptionsRequestValidator>();
 builder.Services.AddScoped<IValidator<CreateShareRequset>, CreateShareRequestValdation>();
 //=======
 builder.Services.AddEndpointsApiExplorer();

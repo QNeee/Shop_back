@@ -8,11 +8,15 @@ namespace Shop_back.Contracts.Request.Product
         string Description,
         Dictionary<string, string[]> Images,
         List<ProductModelVariant> Variants,
+        Dictionary<string, string> Options,
         string Type
     );
     public record UpdateProductImagesRequest(
       Dictionary<string, string[]> Images
   );
+    public record UpdateProductOptionsRequest(
+     Dictionary<string, string> Options
+ );
     public record UpdateProductMainInfoRequest(
          string Title,
          string Description
