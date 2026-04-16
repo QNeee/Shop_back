@@ -44,7 +44,7 @@ namespace Shop_back.DataAccess.Repositories.Shares
                         Title = $"{share.Product?.Title} {variant.Memory}/{variant.Storage}",
                         Type = share.Product?.Type ?? "",
                         Discount = JsonSerializer.Deserialize<Discount>(share.Discount),
-                        InStockCount = variant.Stock,
+                        Stock = variant.Stock,
                         Price = variant.Price,
                         Images = JsonSerializer.Deserialize<Dictionary<string, string[]>>(share.Product?.Images ?? "") ?? new Dictionary<string, string[]>()
 

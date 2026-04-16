@@ -30,28 +30,20 @@ namespace Shop_back.DataAccess.Repositories.Product
 
         public async Task<List<ProductModel>> Get()
         {
-            return await _context.Products
-                            .Select(p => ProductRepositoryHelper.MakeProductModel(
-                                p,
-                                _context.Shares.Any(s => s.ProductId == p.Id)
-                            ))
-                            .ToListAsync();
+            return await _context.Products.Select(p => ProductRepositoryHelper.MakeProductModel(p, ProductRepositoryHelper.MakeDiscount(p.Variants, _context.Shares.FirstOrDefault(sh => sh.ProductId == p.Id))))
+              .ToListAsync();
         }
-
         public async Task<List<ProductModel>> GetByFilter(string filter)
         {
             return await _context.Products
                 .Where(p => p.Type == filter)
-                .Select(p => ProductRepositoryHelper.MakeProductModel(
-                    p,
-                    _context.Shares.Any(s => s.ProductId == p.Id)
-                ))
+                .Select(p => ProductRepositoryHelper.MakeProductModel(p, ProductRepositoryHelper.MakeDiscount(p.Variants, _context.Shares.FirstOrDefault(sh => sh.ProductId == p.Id))))
                 .ToListAsync();
         }
 
         public async Task<ProductModel?> GetById(Guid id)
         {
-            return await _context.Products.Where(p => p.Id == id).Select(p => ProductRepositoryHelper.MakeProductModel(p)).FirstOrDefaultAsync();
+            return await _context.Products.Where(p => p.Id == id).Select(p => ProductRepositoryHelper.MakeProductModel(p, ProductRepositoryHelper.MakeDiscount(p.Variants, _context.Shares.FirstOrDefault(sh => sh.ProductId == p.Id)))).FirstOrDefaultAsync();
         }
         public async Task<Guid> UpdateProductMainInfo(Guid id, string title, string description)
         {

@@ -21,7 +21,7 @@ namespace Shop_back.Core.Models.Shares
         public string Title { get; set; } = string.Empty;
         public string Type { get; set; } = string.Empty;
         public Discount? Discount { get; set; }
-        public int InStockCount { get; set; }
+        public int Stock { get; set; }
         public int Price { get; set; }
         public Dictionary<string, string[]> Images { get; set; } = new Dictionary<string, string[]>();
     }

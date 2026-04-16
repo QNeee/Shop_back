@@ -1,4 +1,5 @@
-﻿namespace Shop_back.Core.Models.Product
+﻿
+namespace Shop_back.Core.Models.Product
 {
     public class ProductModelVariant
     {
