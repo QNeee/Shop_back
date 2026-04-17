@@ -1,6 +1,7 @@
 ﻿
 using Shop_back.Core.Abstractions.Product;
 using Shop_back.Core.Models.Product;
+using Shop_back.Core.Models.Product.ProductVariant;
 
 namespace Shop_back.Services.Product
 {
@@ -13,9 +14,14 @@ namespace Shop_back.Services.Product
             _productRepository = productRepository;
         }
 
-        public Task<Guid> CreateProduct(ProductModel product)
+        public async Task<bool> GetCategoryExists(int categoryId)
         {
-            return _productRepository.Create(product);
+           return await  _productRepository.GetCategoryExists(categoryId);
+        }
+
+        public async Task<Guid> CreateProduct(ProductModel product)
+        {
+            return await _productRepository.Create(product);
         }
 
         public async Task<Guid> DeleteProduct(Guid id)
@@ -23,40 +29,46 @@ namespace Shop_back.Services.Product
             return await _productRepository.Delete(id);
         }
 
-        public async Task<List<ProductModel>> GetAllProducts()
+        public async Task<List<ProductModel>> GetAllProducts(int? categoryId)
         {
-            return await _productRepository.Get();
-        }
-
-        public async Task<ProductModel?> GetProductById(Guid id)
-        {
-            return await _productRepository.GetById(id);
-        }
-
-        public async Task<List<ProductModel>> GetProducts(string filter)
-        {
-            return await _productRepository.GetByFilter(filter);
+            return await _productRepository.GetAll(categoryId);
         }
 
 
-        public async Task<Guid> UpdateProductImages(Guid id, Dictionary<string, string[]> SmartImages)
+
+        public async Task<Guid> UpdateProductImages(Guid id, Dictionary<string, string[]> images)
         {
-            return  await _productRepository.UpdateProductImages(id, SmartImages);
+            return await _productRepository.UpdateProductImages(id, images);
         }
 
-        public async Task<Guid> UpdateProductMainInfo(Guid id, string title, string desc)
+        public async Task<Guid> UpdateProductMainInfo(Guid id, string productName, int categoryId)
         {
-            return await _productRepository.UpdateProductMainInfo(id, title, desc);
+            return await _productRepository.UpdateProductMainInfo(id, productName, categoryId);
         }
 
-        public async Task<Guid> UpdateProductOptions(Guid id, Dictionary<string, string> options)
+        public async Task<Guid> UpdateProductOptions(Guid id, ProductOptions options)
         {
             return await _productRepository.UpdateProductOptions(id, options);
         }
 
-        public async Task<Guid> UpdateProductVariants(Guid id, List<ProductModelVariant> variants)
+        public async Task<Guid> UpdateProductVariants(Guid id, List<ProductVariantModel> variants)
         {
             return await _productRepository.UpdateProductVariants(id, variants);
+        }
+
+        public async Task<Guid> UpdateProductVariant(Guid productId, ProductVariantModel variant,Guid variantId)
+        {
+            return await _productRepository.UpdateProductVariant(productId, variant, variantId);
+        }
+
+        public async Task<bool> GetProductVariantExists(Guid productId,Guid variantId)
+        {
+            return await _productRepository.GetProductVariantExists(productId, variantId);
+        }
+
+        public async Task<List<ProductModel>> GetAllSharesProducts(int? categoryId)
+        {
+            return await _productRepository.GetAllSharesProducts(categoryId);
         }
     }
 }

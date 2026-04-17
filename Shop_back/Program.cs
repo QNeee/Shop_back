@@ -1,17 +1,12 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Shop_back.Contracts.Request.Product;
-using Shop_back.Contracts.Request.Shares;
 using Shop_back.Core.Abstractions.Product;
-using Shop_back.Core.Abstractions.Shares;
 using Shop_back.DataAccess;
 using Shop_back.DataAccess.Repositories.Product;
-using Shop_back.DataAccess.Repositories.Shares;
 using Shop_back.Middlewares;
 using Shop_back.Services.Product;
-using Shop_back.Services.Shares;
 using Shop_back.Validation.Product;
-using Shop_back.Validation.Shares;
 var builder = WebApplication.CreateBuilder(args);
 var alowFront = "AllowFrontend";
 builder.Services.AddCors(options =>
@@ -36,7 +31,7 @@ builder.Services.AddScoped<IValidator<UpdateProductImagesRequest>, UpdateProduct
 builder.Services.AddScoped<IValidator<UpdateProductMainInfoRequest>, UpdateProductMainInfoRequestValidator>();
 builder.Services.AddScoped<IValidator<UpdateProductVariantsRequest>, UpdateProductVariantsRequestValidator>();
 builder.Services.AddScoped<IValidator<UpdateProductOptionsRequest>, UpdateProductOptionsRequestValidator>();
-builder.Services.AddScoped<IValidator<CreateShareRequset>, CreateShareRequestValdation>();
+builder.Services.AddScoped<IValidator<UpdateProductVariantRequest>, UpdateProductVariantRequestValidator>();
 //=======
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -62,8 +57,6 @@ builder.Services.AddDbContext<ShopBackDbContext>(
 
     }
 );
-builder.Services.AddScoped<ISharesService, SharesService>();
-builder.Services.AddScoped<ISharesRepository, SharesRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 var app = builder.Build();
@@ -79,9 +72,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 app.MapControllers();

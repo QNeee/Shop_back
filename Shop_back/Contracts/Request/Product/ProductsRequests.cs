@@ -1,27 +1,30 @@
 ﻿using Shop_back.Core.Models.Product;
+using Shop_back.Core.Models.Product.ProductVariant;
 
 namespace Shop_back.Contracts.Request.Product
 {
     public record CreateProductRequest(
-        Guid Id,
-        string Title,
-        string Description,
+        string ProductName,
+        int CategoryId,
+        ProductOptions Options,
         Dictionary<string, string[]> Images,
-        List<ProductModelVariant> Variants,
-        Dictionary<string, string> Options,
-        string Type
+        List<ProductVariantModel> Variants
     );
     public record UpdateProductImagesRequest(
       Dictionary<string, string[]> Images
   );
     public record UpdateProductOptionsRequest(
-     Dictionary<string, string> Options
+     ProductOptions Options
  );
     public record UpdateProductMainInfoRequest(
-         string Title,
-         string Description
+         string ProductName,
+         int CategoryId
     );
     public record UpdateProductVariantsRequest(
-         List<ProductModelVariant> Variants
+         List<ProductVariantModel> Variants
+    );
+    public record UpdateProductVariantRequest(
+         Guid ProductVariantId,
+         ProductVariantModel Variant
     );
 }

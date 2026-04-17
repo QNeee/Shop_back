@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop_back.Core.Abstractions.Product;
 using Shop_back.Core.Models.Product;
-using System.Text.Json;
+using Shop_back.Core.Models.Product.ProductVariant;
+using Shop_back.DataAccess.Entities.Product;
+using Shop_back.DataAccess.Entities.Product.ProductVariant;
 
 namespace Shop_back.DataAccess.Repositories.Product
 {
@@ -16,60 +18,171 @@ namespace Shop_back.DataAccess.Repositories.Product
 
         public async Task<Guid> Create(ProductModel product)
         {
-            var productEntity = ProductRepositoryHelper.MakeProductEntity(product);
+
+
+            var productEntity = new ProductEntity
+            {
+                ProductId = Guid.NewGuid(),
+                ProductName = product.ProductName,
+                CategoryId = product.CategoryId,
+                ScreenResolution = product.Options.ScreenResolution,
+                ScreenSize = product.Options.ScreenSize,
+                Cores = product.Options.Cores,
+                PowerW = product.Options.PowerW,
+
+            };
+            productEntity.Variants = product.Variants.Select(v => new ProductVariantEntity
+            {
+                ProductVariantId = Guid.NewGuid(),
+                StorageGb = v.StorageGb,
+                MemoryGb = v.MemoryGb,
+                Price = v.Price,
+                Stock = v.Stock,
+                DiscountPercent = v.DiscountPercent,
+                DiscountExpiresAt = v.DiscountExpiresAt
+            }).ToList();
+
+            productEntity.Images = product.Images.Select(im => new ProductImageEntity { Color = im.Key, Urls = im.Value }).ToList();
+
             await _context.Products.AddAsync(productEntity);
             await _context.SaveChangesAsync();
-            return product.Id;
+
+            return productEntity.ProductId;
         }
 
         public async Task<Guid> Delete(Guid id)
         {
-            await _context.Products.Where(s => s.Id == id).ExecuteDeleteAsync();
+            await _context.Products.Where(s => s.ProductId == id).ExecuteDeleteAsync();
             return id;
         }
 
-        public async Task<List<ProductModel>> Get()
+        public async Task<List<ProductModel>> GetAll(int? categoryId)
         {
-            return await _context.Products.Select(p => ProductRepositoryHelper.MakeProductModel(p, ProductRepositoryHelper.MakeDiscount(p.Variants, _context.Shares.FirstOrDefault(sh => sh.ProductId == p.Id))))
-              .ToListAsync();
+
+            var query = _context.Products.AsQueryable();
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+            }
+
+            var products = await query.AsNoTracking().ToListAsync();
+            return query.Select(p => ProductReposityoryHelper.MakeProductModel(p.ProductId, p.CategoryId, p.ProductName,
+                new ProductOptions { Cores = p.Cores, ScreenResolution = p.ScreenResolution, ScreenSize = p.ScreenSize, PowerW = p.PowerW }, p.Variants, p.Images)).ToList();
         }
-        public async Task<List<ProductModel>> GetByFilter(string filter)
+        public async Task<Guid> UpdateProductMainInfo(Guid id, string productName, int categoryId)
         {
-            return await _context.Products
-                .Where(p => p.Type == filter)
-                .Select(p => ProductRepositoryHelper.MakeProductModel(p, ProductRepositoryHelper.MakeDiscount(p.Variants, _context.Shares.FirstOrDefault(sh => sh.ProductId == p.Id))))
-                .ToListAsync();
+            await _context.Products.Where(s => s.ProductId == id).ExecuteUpdateAsync(s => s
+                .SetProperty(b => b.ProductName, productName)
+                .SetProperty(b => b.CategoryId, categoryId));
+            return id;
+        }
+        public async Task<Guid> UpdateProductImages(Guid id, Dictionary<string, string[]> productImages)
+        {
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            await _context.ProductImages
+                .Where(x => x.ProductId == id)
+                .ExecuteDeleteAsync();
+            var newImages = productImages
+                .Select(im => new ProductImageEntity
+                {
+                    ProductImageId = Guid.NewGuid(),
+                    ProductId = id,
+                    Color = im.Key,
+                    Urls = im.Value
+                })
+                .ToList();
+
+            await _context.ProductImages.AddRangeAsync(newImages);
+
+            await _context.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+
+            return id;
+        }
+        public async Task<Guid> UpdateProductVariants(Guid id, List<ProductVariantModel> variants)
+        {
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            await _context.ProductVariants
+                .Where(x => x.ProductId == id)
+                .ExecuteDeleteAsync();
+            var newVariants = variants.Select(v => new ProductVariantEntity
+            {
+                ProductVariantId = Guid.NewGuid(),
+                ProductId = id,
+                StorageGb = v.StorageGb,
+                MemoryGb = v.MemoryGb,
+                Stock = v.Stock,
+                Price = v.Price,
+                DiscountPercent = v.DiscountPercent,
+                DiscountExpiresAt = v.DiscountExpiresAt
+            });
+
+            await _context.ProductVariants.AddRangeAsync(newVariants);
+
+            await _context.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+
+            return id;
         }
 
-        public async Task<ProductModel?> GetById(Guid id)
+        public async Task<Guid> UpdateProductOptions(Guid id, ProductOptions options)
         {
-            return await _context.Products.Where(p => p.Id == id).Select(p => ProductRepositoryHelper.MakeProductModel(p, ProductRepositoryHelper.MakeDiscount(p.Variants, _context.Shares.FirstOrDefault(sh => sh.ProductId == p.Id)))).FirstOrDefaultAsync();
-        }
-        public async Task<Guid> UpdateProductMainInfo(Guid id, string title, string description)
-        {
-            await _context.Products.Where(s => s.Id == id).ExecuteUpdateAsync(s => s
-                .SetProperty(b => b.Title, title)
-                .SetProperty(b => b.Description, description));
-            return id;
-        }
-        public async Task<Guid> UpdateProductImages(Guid id, Dictionary<string, string[]> smartImages)
-        {
-            await _context.Products.Where(s => s.Id == id).ExecuteUpdateAsync(s => s
-                .SetProperty(b => b.Images, JsonSerializer.Serialize(smartImages)));
-            return id;
-        }
-        public async Task<Guid> UpdateProductVariants(Guid id, List<ProductModelVariant> variants)
-        {
-            await _context.Products.Where(s => s.Id == id).ExecuteUpdateAsync(s => s
-                .SetProperty(b => b.Variants, JsonSerializer.Serialize(variants)));
+            await _context.Products.Where(s => s.ProductId == id).ExecuteUpdateAsync(s => s
+                .SetProperty(b => b.Cores, options.Cores)
+                .SetProperty(b => b.PowerW, options.PowerW)
+                .SetProperty(b => b.ScreenSize, options.ScreenSize)
+                .SetProperty(b => b.ScreenResolution, options.ScreenResolution)
+                );
+
             return id;
         }
 
-        public async Task<Guid> UpdateProductOptions(Guid id, Dictionary<string, string> options)
+        public async Task<bool> GetCategoryExists(int categoryId)
         {
-            await _context.Products.Where(s => s.Id == id).ExecuteUpdateAsync(s => s
-                .SetProperty(b => b.Options, JsonSerializer.Serialize(options)));
-            return id;
+            return await _context.Categories.AnyAsync(c => c.CategoryId == categoryId);
+        }
+
+        public async Task<Guid> UpdateProductVariant(Guid productId, ProductVariantModel variant, Guid variantId)
+        {
+            var existingVariant = await _context.ProductVariants
+                .FirstOrDefaultAsync(x => x.ProductVariantId == variantId
+                                       && x.ProductId == productId);
+
+
+            existingVariant!.StorageGb = variant.StorageGb;
+            existingVariant.MemoryGb = variant.MemoryGb;
+            existingVariant.Stock = variant.Stock;
+            existingVariant.Price = variant.Price;
+            existingVariant.DiscountPercent = variant.DiscountPercent;
+            existingVariant.DiscountExpiresAt = variant.DiscountExpiresAt;
+
+            await _context.SaveChangesAsync();
+
+            return variantId;
+        }
+
+        public async Task<bool> GetProductVariantExists(Guid productId,Guid variantId)
+        {
+            return await _context.ProductVariants.AnyAsync(c => c.ProductVariantId == variantId && c.ProductId == productId);
+        }
+
+        public async Task<List<ProductModel>> GetAllSharesProducts(int? categoryId)
+        {
+            var now = DateTime.UtcNow;
+            var query = _context.Products.AsQueryable();
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+            }
+            return await query.AsNoTracking().Where(p => p.Variants.Any(v => v.DiscountPercent != null && v.DiscountExpiresAt != null
+    ))
+                .Select(p => ProductReposityoryHelper.MakeProductModel(p.ProductId, p.CategoryId, p.ProductName,
+                new ProductOptions { Cores = p.Cores, ScreenResolution = p.ScreenResolution, ScreenSize = p.ScreenSize, PowerW = p.PowerW }, 
+                p.Variants.Where(v=> v.DiscountPercent != null && v.DiscountExpiresAt != null).ToList(), p.Images)).ToListAsync();
         }
     }
 }

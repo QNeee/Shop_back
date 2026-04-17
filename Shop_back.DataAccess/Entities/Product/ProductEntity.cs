@@ -1,14 +1,14 @@
 ﻿
+using Shop_back.DataAccess.Entities.Category;
+using Shop_back.DataAccess.Entities.Product.ProductVariant;
+using Shop_back.Core.Models.Product;
 namespace Shop_back.DataAccess.Entities.Product
 {
-    public class ProductEntity
+    public class ProductEntity : ProductEntityBase
     {
-        public Guid Id { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public string Images { get; set; } = "{}";
-        public string Type { get; set; } = string.Empty;
-        public string Variants { get; set; } = "[]";
-        public string Options { get; set; } = "{}";
+        public ICollection<ProductVariantEntity> Variants { get; set; } = new List<ProductVariantEntity>();
+        public ICollection<ProductImageEntity> Images { get; set; } = new List<ProductImageEntity>();
+        public CategoryEntity Category { get; set; } = null!;
+        public int CategoryId { get; set; }
     }
 }
