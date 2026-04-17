@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop_back.Core.Abstractions.Product;
 using Shop_back.Core.Models.Product;
+using Shop_back.Core.Models.Product.ProductShares;
 using Shop_back.Core.Models.Product.ProductVariant;
 using Shop_back.DataAccess.Entities.Product;
 using Shop_back.DataAccess.Entities.Product.ProductVariant;
@@ -169,20 +170,25 @@ namespace Shop_back.DataAccess.Repositories.Product
             return await _context.ProductVariants.AnyAsync(c => c.ProductVariantId == variantId && c.ProductId == productId);
         }
 
-        public async Task<List<ProductModel>> GetAllSharesProducts(int? categoryId)
+        public async Task<List<ProductSharesModel>> GetAllSharesProducts(int? categoryId)
         {
             var now = DateTime.UtcNow;
-            var query = _context.Products.AsQueryable();
 
-            if (categoryId.HasValue)
-            {
-                query = query.Where(p => p.CategoryId == categoryId.Value);
-            }
-            return await query.AsNoTracking().Where(p => p.Variants.Any(v => v.DiscountPercent != null && v.DiscountExpiresAt != null
-    ))
-                .Select(p => ProductReposityoryHelper.MakeProductModel(p.ProductId, p.CategoryId, p.ProductName,
-                new ProductOptions { Cores = p.Cores, ScreenResolution = p.ScreenResolution, ScreenSize = p.ScreenSize, PowerW = p.PowerW }, 
-                p.Variants.Where(v=> v.DiscountPercent != null && v.DiscountExpiresAt != null).ToList(), p.Images)).ToListAsync();
+            return  await _context.ProductVariants
+                .Where(pv =>
+                    pv.DiscountPercent != null &&
+                    pv.DiscountExpiresAt != null
+                )
+                .Include(pv => pv.Product)
+                    .ThenInclude(p => p.Images)
+                .Select(pv => ProductReposityoryHelper.MakeProductSharesModel(
+                    pv,
+                    pv.Product.ProductId,
+                    pv.Product.ProductName,
+                    pv.Product.CategoryId,
+                    pv.Product.Images
+                ))
+                .ToListAsync();
         }
     }
 }

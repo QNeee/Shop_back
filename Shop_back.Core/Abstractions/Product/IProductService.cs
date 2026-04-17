@@ -1,5 +1,6 @@
 ﻿
 using Shop_back.Core.Models.Product;
+using Shop_back.Core.Models.Product.ProductShares;
 using Shop_back.Core.Models.Product.ProductVariant;
 
 namespace Shop_back.Core.Abstractions.Product
@@ -7,7 +8,7 @@ namespace Shop_back.Core.Abstractions.Product
     public interface IProductService
     {
         Task<List<ProductModel>> GetAllProducts(int? categoryId);
-        Task<List<ProductModel>> GetAllSharesProducts(int? categoryId);
+        Task<List<ProductSharesModel>> GetAllSharesProducts(int? categoryId);
         Task<Guid> CreateProduct(ProductModel product);
         Task<Guid> DeleteProduct(Guid id);
         Task<Guid> UpdateProductImages(Guid id, Dictionary<string, string[]> smartImages);

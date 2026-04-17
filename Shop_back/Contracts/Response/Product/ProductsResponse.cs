@@ -6,4 +6,7 @@ namespace Shop_back.Contracts.Response.Product
     public record GetAllProductsResponse(
       List<ProductModel> Products
    );
+    public record GetAllSharesProductResponse(
+        
+        );
 }

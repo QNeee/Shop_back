@@ -1,5 +1,6 @@
 ﻿
 using Shop_back.Core.Models.Product;
+using Shop_back.Core.Models.Product.ProductShares;
 using Shop_back.Core.Models.Product.ProductVariant;
 using Shop_back.DataAccess.Entities.Product;
 using Shop_back.DataAccess.Entities.Product.ProductVariant;
@@ -44,6 +45,22 @@ namespace Shop_back.DataAccess.Repositories.Product
                 DiscountExpiresAt = pVm.DiscountExpiresAt
             };
         }
+        public static ProductSharesModel MakeProductSharesModel(ProductVariantEntity pVe, Guid pId,string productName,int categoryId,ICollection<ProductImageEntity> pIe)
+        {
+            return new ProductSharesModel
+            {
+                ProductId = pId,
+                ProductVariantId = pVe.ProductVariantId,
+                Title = $"{productName} / {pVe.MemoryGb}Gb / {pVe.StorageGb}Gb",
+                Price = pVe.Price,
+                Images = pIe.ToDictionary(im => im.Color, im => im.Urls),
+                CategoryId = categoryId,
+                DiscountExpiresIn = pVe.DiscountExpiresAt,
+                DiscountPercentage = pVe.DiscountPercent,
+                Stock = pVe.Stock
+            };
+        }
+        
         public static ProductModel MakeProductModel(Guid productId, int categoryId, string productName, ProductOptions options, ICollection<ProductVariantEntity> pVe, ICollection<ProductImageEntity> pIe)
         {
             return new ProductModel

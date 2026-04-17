@@ -1,6 +1,7 @@
 ﻿
 using Shop_back.Core.Abstractions.Product;
 using Shop_back.Core.Models.Product;
+using Shop_back.Core.Models.Product.ProductShares;
 using Shop_back.Core.Models.Product.ProductVariant;
 
 namespace Shop_back.Services.Product
@@ -66,7 +67,7 @@ namespace Shop_back.Services.Product
             return await _productRepository.GetProductVariantExists(productId, variantId);
         }
 
-        public async Task<List<ProductModel>> GetAllSharesProducts(int? categoryId)
+        public async Task<List<ProductSharesModel>> GetAllSharesProducts(int? categoryId)
         {
             return await _productRepository.GetAllSharesProducts(categoryId);
         }
