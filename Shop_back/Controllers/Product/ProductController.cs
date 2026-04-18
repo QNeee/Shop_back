@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Shop_back.Contracts.Request.Product;
-using Shop_back.Contracts.Response.Product;
 using Shop_back.Core.Abstractions.Product;
 using Shop_back.Core.Models.Product;
+using Shop_back.Core.Models.Product.ProductShares;
 
 namespace Shop_back.Controllers.Product
 {
@@ -41,12 +41,12 @@ namespace Shop_back.Controllers.Product
             return validationResult.Errors.Select(e => e.ErrorMessage).ToList();
         }
         [HttpGet]
-        public async Task<ActionResult<GetAllProductsResponse>> GetAllProducts([FromQuery] int? categoryId = null)
+        public async Task<ActionResult<List<ProductSharesModel>>> GetAllProducts([FromQuery] int? categoryId = null)
         {
             return Ok(await _service.GetAllProducts(categoryId));
         }
         [HttpGet("shares")]
-        public async Task<ActionResult<GetAllProductsResponse>> GetAllSharesProducts([FromQuery] int? categoryId = null)
+        public async Task<ActionResult<List<ProductSharesModel>>> GetAllSharesProducts([FromQuery] int? categoryId = null)
         {
             return Ok(await _service.GetAllSharesProducts(categoryId));
         }
