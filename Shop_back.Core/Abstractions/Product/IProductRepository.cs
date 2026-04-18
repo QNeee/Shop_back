@@ -1,5 +1,6 @@
 ﻿
 using Shop_back.Core.Models.Product;
+using Shop_back.Core.Models.Product.ProductCatalog;
 using Shop_back.Core.Models.Product.ProductShares;
 using Shop_back.Core.Models.Product.ProductVariant;
 
@@ -8,7 +9,8 @@ namespace Shop_back.Core.Abstractions.Product
     public interface IProductRepository
     {
         Task<List<ProductSharesModel>> GetAllSharesProducts(int? categoryId);
-        Task<List<ProductModel>> GetAll(int? categoryId);
+        Task<List<ProductCatalogModel>> GetAllBasketProducts(List<Guid> ids);
+        Task<List<ProductCatalogModel>> GetAllCatalogProducts(int? categoryId);
         Task<Guid> Create(ProductModel product);
         Task<Guid> Delete(Guid id);
         Task<Guid> UpdateProductImages(Guid id, Dictionary<string, string[]> smartImages);

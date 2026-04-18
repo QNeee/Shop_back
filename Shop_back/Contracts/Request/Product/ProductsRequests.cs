@@ -27,4 +27,7 @@ namespace Shop_back.Contracts.Request.Product
          Guid ProductVariantId,
          ProductVariantModel Variant
     );
+    public record GetUserBasket(
+        Dictionary<int, string[]> CategoryItems
+    );
 }

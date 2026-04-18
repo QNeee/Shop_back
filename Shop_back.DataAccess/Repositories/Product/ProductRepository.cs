@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop_back.Core.Abstractions.Product;
 using Shop_back.Core.Models.Product;
+using Shop_back.Core.Models.Product.ProductCatalog;
 using Shop_back.Core.Models.Product.ProductShares;
 using Shop_back.Core.Models.Product.ProductVariant;
 using Shop_back.DataAccess.Entities.Product;
@@ -57,19 +58,16 @@ namespace Shop_back.DataAccess.Repositories.Product
             return id;
         }
 
-        public async Task<List<ProductModel>> GetAll(int? categoryId)
+        public async Task<List<ProductCatalogModel>> GetAllCatalogProducts(int? categoryId)
         {
 
-            var query = _context.Products.AsQueryable();
+            var query = _context.ProductVariants.AsQueryable().AsNoTracking();
 
             if (categoryId.HasValue)
             {
-                query = query.Where(p => p.CategoryId == categoryId.Value);
+                query = query.Where(p => p.Product.CategoryId == categoryId.Value);
             }
-
-            var products = await query.AsNoTracking().ToListAsync();
-            return query.Select(p => ProductReposityoryHelper.MakeProductModel(p.ProductId, p.CategoryId, p.ProductName,
-                new ProductOptions { Cores = p.Cores, ScreenResolution = p.ScreenResolution, ScreenSize = p.ScreenSize, PowerW = p.PowerW }, p.Variants, p.Images)).ToList();
+            return await query.Select(p => ProductReposityoryHelper.MakeProductCatalogModel(p, p.Product.ProductId, p.Product.ProductName, p.Product.CategoryId, p.Product.Images, new ProductOptions { Cores = p.Product.Cores, ScreenResolution = p.Product.ScreenResolution, ScreenSize = p.Product.ScreenSize, PowerW = p.Product.PowerW })).ToListAsync();
         }
         public async Task<Guid> UpdateProductMainInfo(Guid id, string productName, int categoryId)
         {
@@ -165,7 +163,7 @@ namespace Shop_back.DataAccess.Repositories.Product
             return variantId;
         }
 
-        public async Task<bool> GetProductVariantExists(Guid productId,Guid variantId)
+        public async Task<bool> GetProductVariantExists(Guid productId, Guid variantId)
         {
             return await _context.ProductVariants.AnyAsync(c => c.ProductVariantId == variantId && c.ProductId == productId);
         }
@@ -174,13 +172,11 @@ namespace Shop_back.DataAccess.Repositories.Product
         {
             var now = DateTime.UtcNow;
 
-            return  await _context.ProductVariants
+            return await _context.ProductVariants
                 .Where(pv =>
                     pv.DiscountPercent != null &&
                     pv.DiscountExpiresAt != null
                 )
-                .Include(pv => pv.Product)
-                    .ThenInclude(p => p.Images)
                 .Select(pv => ProductReposityoryHelper.MakeProductSharesModel(
                     pv,
                     pv.Product.ProductId,
@@ -189,6 +185,14 @@ namespace Shop_back.DataAccess.Repositories.Product
                     pv.Product.Images
                 ))
                 .ToListAsync();
+        }
+
+        public async Task<List<ProductCatalogModel>> GetAllBasketProducts(List<Guid> ids)
+        {
+
+            var query = _context.ProductVariants.AsQueryable().AsNoTracking();
+
+            return await query.Where(p => ids.Contains(p.ProductVariantId)).Select(p => ProductReposityoryHelper.MakeProductCatalogModel(p, p.Product.ProductId, p.Product.ProductName, p.Product.CategoryId, p.Product.Images, new ProductOptions { Cores = p.Product.Cores, ScreenResolution = p.Product.ScreenResolution, ScreenSize = p.Product.ScreenSize, PowerW = p.Product.PowerW })).ToListAsync();
         }
     }
 }

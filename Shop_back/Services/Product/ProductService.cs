@@ -1,6 +1,7 @@
 ﻿
 using Shop_back.Core.Abstractions.Product;
 using Shop_back.Core.Models.Product;
+using Shop_back.Core.Models.Product.ProductCatalog;
 using Shop_back.Core.Models.Product.ProductShares;
 using Shop_back.Core.Models.Product.ProductVariant;
 
@@ -30,10 +31,10 @@ namespace Shop_back.Services.Product
             return await _productRepository.Delete(id);
         }
 
-        public async Task<List<ProductModel>> GetAllProducts(int? categoryId)
+        public async Task<List<ProductCatalogModel>> GetAllCatalogProducts(int? categoryId)
         {
-            return await _productRepository.GetAll(categoryId);
-        }
+            return await _productRepository.GetAllCatalogProducts(categoryId);
+        }   
 
 
 
@@ -70,6 +71,11 @@ namespace Shop_back.Services.Product
         public async Task<List<ProductSharesModel>> GetAllSharesProducts(int? categoryId)
         {
             return await _productRepository.GetAllSharesProducts(categoryId);
+        }
+
+        public async Task<List<ProductCatalogModel>> GetAllBasketProducts(List<Guid> ids)
+        {
+            return await _productRepository.GetAllBasketProducts(ids);
         }
     }
 }

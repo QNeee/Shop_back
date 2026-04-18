@@ -1,5 +1,7 @@
 ﻿
+using Microsoft.Extensions.Options;
 using Shop_back.Core.Models.Product;
+using Shop_back.Core.Models.Product.ProductCatalog;
 using Shop_back.Core.Models.Product.ProductShares;
 using Shop_back.Core.Models.Product.ProductVariant;
 using Shop_back.DataAccess.Entities.Product;
@@ -60,7 +62,22 @@ namespace Shop_back.DataAccess.Repositories.Product
                 Stock = pVe.Stock
             };
         }
-        
+        public static ProductCatalogModel MakeProductCatalogModel (ProductVariantEntity pVe, Guid pId, string productName, int categoryId, ICollection<ProductImageEntity> pIe, ProductOptions options)
+        {
+            return new ProductCatalogModel
+            {
+                ProductId = pId,
+                ProductVariantId = pVe.ProductVariantId,
+                Title = $"{productName} / {pVe.MemoryGb}Gb / {pVe.StorageGb}Gb",
+                Price = pVe.Price,
+                Images = pIe.ToDictionary(im => im.Color, im => im.Urls),
+                CategoryId = categoryId,
+                DiscountExpiresIn = pVe.DiscountExpiresAt,
+                DiscountPercentage = pVe.DiscountPercent,
+                Stock = pVe.Stock,
+                Options = options
+            };
+        }
         public static ProductModel MakeProductModel(Guid productId, int categoryId, string productName, ProductOptions options, ICollection<ProductVariantEntity> pVe, ICollection<ProductImageEntity> pIe)
         {
             return new ProductModel
